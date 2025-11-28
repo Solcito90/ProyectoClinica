@@ -3,7 +3,6 @@ using System.Linq;
 using Clinica.Dominio.Entidades;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace Clinica.WebAPI.Controllers
 {
     [ApiController]
@@ -29,7 +28,9 @@ namespace Clinica.WebAPI.Controllers
         public ActionResult<Medico> GetById(int id)
         {
             var medico = _medicos.FirstOrDefault(m => m.Id == id);
-            if (medico == null) return NotFound("Médico no encontrado");
+            if (medico == null)
+                return NotFound("Médico no encontrado");
+
             return Ok(medico);
         }
 
@@ -41,6 +42,33 @@ namespace Clinica.WebAPI.Controllers
             _medicos.Add(nuevo);
 
             return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
+        }
+
+        // PUT api/medicos/5
+        [HttpPut("{id:int}")]
+        public ActionResult Put(int id, Medico actualizado)
+        {
+            var medico = _medicos.FirstOrDefault(m => m.Id == id);
+            if (medico == null)
+                return NotFound("Médico no encontrado");
+
+            medico.Nombre = actualizado.Nombre;
+            medico.Especialidad = actualizado.Especialidad;
+            medico.Matricula = actualizado.Matricula;
+
+            return Ok(medico);
+        }
+
+        // DELETE api/medicos/5
+        [HttpDelete("{id:int}")]
+        public ActionResult Delete(int id)
+        {
+            var medico = _medicos.FirstOrDefault(m => m.Id == id);
+            if (medico == null)
+                return NotFound("Médico no encontrado");
+
+            _medicos.Remove(medico);
+            return NoContent();
         }
     }
 }
